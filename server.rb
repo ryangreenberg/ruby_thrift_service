@@ -16,18 +16,17 @@ SERVER_PORT = 9090
 #
 # You may want a more descriptive class name than ServiceHandler
 class ServiceHandler
-  def initialize
-    @log = {}
-  end
-
   def hello(request)
+    log(request)
     GenericResponse.new(:message => "Hello, client, at #{Time.now.to_s}!")
   end
-end
 
-# Thrift provides mutiple communication endpoints
-#  - Here we will expose our service via a TCP socket
-#  - The server will run as a single thread, on port 9090
+  private
+
+  def log(request)
+    puts "Request #{Time.now}: #{request.inspect}"
+  end
+end
 
 handler = ServiceHandler.new
 # You will need to change the name of your processor based on the name
