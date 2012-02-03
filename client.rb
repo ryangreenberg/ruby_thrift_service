@@ -11,15 +11,12 @@ SERVER_HOST = '127.0.0.1'
 SERVER_PORT = 9090
 
 puts "Starting simple client..."
+print "How many parallel requests do you want to make? [1] "
+parallel_requests = STDIN.gets.strip.to_i
+parallel_requests = 1 if parallel_requests < 1
 puts "Press enter to make a request, ctrl-c to exit"
 
 exit = false
-transport = Thrift::FramedTransport.new(Thrift::Socket.new(SERVER_HOST, SERVER_PORT))
-protocol = Thrift::BinaryProtocol.new(transport)
-# You will need to change the name of your client based on the name
-# of your Thrift service. If your service is named foo.thrift, this
-# will probably be FooService::Client
-client = GenericService::Client.new(protocol)
 
 while true
 
@@ -30,21 +27,32 @@ while true
   end
 
   begin
-    start = Time.now
-    request = GenericRequest.new(:message => "Hello, server!")
+    parallel_requests.times do |i|
+      Thread.new do
+        transport = Thrift::FramedTransport.new(Thrift::Socket.new(SERVER_HOST, SERVER_PORT))
+        protocol = Thrift::BinaryProtocol.new(transport)
 
-    transport.open()
-    puts "Calling service with #{request.inspect}..."
-    response = client.hello(request)
-    puts "Service responsed with #{response.inspect}"
-    transport.close()
+        # You will need to change the name of your client based on the name
+        # of your Thrift service. If your service is named foo.thrift, this
+        # will probably be FooService::Client
+        client = GenericService::Client.new(protocol)
 
-    puts "Request took: #{Time.now - start}s"
+        start = Time.now
+        request = GenericRequest.new(:message => "Hello, server!")
 
+        transport.open()
+        puts "Calling service with #{request.inspect}..."
+        response = client.hello(request)
+        puts "Service responsed with #{response.inspect}"
+        transport.close()
+
+        puts "Request took: #{Time.now - start}s"
+      end
+    end
   rescue Thrift::Exception => e
-    p "Exception from service: #{e.inspect}"
+    puts "Exception from service: #{e.inspect}"
   end
 
 end
 
-puts "Done"
+puts "\nDone"
