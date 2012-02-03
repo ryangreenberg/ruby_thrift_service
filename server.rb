@@ -1,5 +1,6 @@
 $:.push('./lib/thrift')
 require 'rubygems'
+gem 'thrift', '>= 0.5.0'
 
 # Replace this require with the name of your service as it
 # appears in lib/thrift. For example, if your thrift file is

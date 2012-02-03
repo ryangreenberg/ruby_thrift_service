@@ -48,10 +48,9 @@ module GenericService
   # HELPER FUNCTIONS AND STRUCTURES
 
   class Hello_args
-    include ::Thrift::Struct
+    include ::Thrift::Struct, ::Thrift::Struct_Union
     REQUEST = 1
 
-    ::Thrift::Struct.field_accessor self, :request
     FIELDS = {
       REQUEST => {:type => ::Thrift::Types::STRUCT, :name => 'request', :class => GenericRequest}
     }
@@ -61,14 +60,14 @@ module GenericService
     def validate
     end
 
+    ::Thrift::Struct.generate_accessors self
   end
 
   class Hello_result
-    include ::Thrift::Struct
+    include ::Thrift::Struct, ::Thrift::Struct_Union
     SUCCESS = 0
     E = 1
 
-    ::Thrift::Struct.field_accessor self, :success, :e
     FIELDS = {
       SUCCESS => {:type => ::Thrift::Types::STRUCT, :name => 'success', :class => GenericResponse},
       E => {:type => ::Thrift::Types::STRUCT, :name => 'e', :class => GenericException}
@@ -79,6 +78,7 @@ module GenericService
     def validate
     end
 
+    ::Thrift::Struct.generate_accessors self
   end
 
 end

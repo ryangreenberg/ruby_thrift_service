@@ -6,10 +6,9 @@
 
 
 class GenericRequest
-  include ::Thrift::Struct
+  include ::Thrift::Struct, ::Thrift::Struct_Union
   MESSAGE = 1
 
-  ::Thrift::Struct.field_accessor self, :message
   FIELDS = {
     MESSAGE => {:type => ::Thrift::Types::STRING, :name => 'message'}
   }
@@ -19,13 +18,13 @@ class GenericRequest
   def validate
   end
 
+  ::Thrift::Struct.generate_accessors self
 end
 
 class GenericResponse
-  include ::Thrift::Struct
+  include ::Thrift::Struct, ::Thrift::Struct_Union
   MESSAGE = 1
 
-  ::Thrift::Struct.field_accessor self, :message
   FIELDS = {
     MESSAGE => {:type => ::Thrift::Types::STRING, :name => 'message'}
   }
@@ -35,10 +34,11 @@ class GenericResponse
   def validate
   end
 
+  ::Thrift::Struct.generate_accessors self
 end
 
 class GenericException < ::Thrift::Exception
-  include ::Thrift::Struct
+  include ::Thrift::Struct, ::Thrift::Struct_Union
   def initialize(message=nil)
     super()
     self.error = message
@@ -48,7 +48,6 @@ class GenericException < ::Thrift::Exception
 
   ERROR = 1
 
-  ::Thrift::Struct.field_accessor self, :error
   FIELDS = {
     ERROR => {:type => ::Thrift::Types::STRING, :name => 'error'}
   }
@@ -58,5 +57,6 @@ class GenericException < ::Thrift::Exception
   def validate
   end
 
+  ::Thrift::Struct.generate_accessors self
 end
 
