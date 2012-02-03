@@ -37,7 +37,15 @@ processor = GenericService::Processor.new(handler)
 server_transport = Thrift::ServerSocket.new(SERVER_PORT)
 transport_factory = Thrift::FramedTransportFactory.new
 
-puts "Starting the server..."
+# A SimpleServer will only be able to serve a single request at a time
+# You can use a ThreadedServer or a ThreadPoolServer to handle multiple
+# simultaneous requests, keeping in mind that the methods of the ServiceHandler
+# must be careful with respect to accessing shared resources.
+server = Thrift::SimpleServer.new(processor, server_transport, transport_factory)
+# server = Thrift::ThreadedServer.new(processor, server_transport, transport_factory)
+# server = Thrift::ThreadPoolServer.new(processor, server_transport, transport_factory)
+
+puts "Starting service using #{server.class}..."
 puts "Listening on port #{SERVER_PORT}"
 puts "(ctrl-c to stop)"
 
@@ -45,4 +53,4 @@ begin
   server.serve
 rescue Interrupt => e
 end
-puts "Done"
+puts "\nDone"
