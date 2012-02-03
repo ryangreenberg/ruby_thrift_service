@@ -29,13 +29,13 @@ class ServiceHandler
 end
 
 handler = ServiceHandler.new
+
 # You will need to change the name of your processor based on the name
 # of your Thrift service. If your service is named foo.thrift, this
 # will probably be FooService::Client
 processor = GenericService::Processor.new(handler)
-transport = Thrift::ServerSocket.new(SERVER_PORT)
-transportFactory = Thrift::FramedTransportFactory.new
-server = Thrift::SimpleServer.new(processor, transport, transportFactory)
+server_transport = Thrift::ServerSocket.new(SERVER_PORT)
+transport_factory = Thrift::FramedTransportFactory.new
 
 puts "Starting the server..."
 puts "Listening on port #{SERVER_PORT}"
